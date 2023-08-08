@@ -48,9 +48,17 @@
                     'id_give':signinId,
                     'pw_give':signinPw
                 },
-                success: function(res){
-                    alert('성공!')
+                success: function (response) {
+                    console.log(response)
+                    if (response['result'] == 'success') {
+
+                        alert('로그인 완료');
+                        window.location.replace('/')
+                    } else {
+                        alert(response['msg'])
+                    }
                 }
+                
             })
         }
     </script>

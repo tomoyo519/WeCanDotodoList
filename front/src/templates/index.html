@@ -42,19 +42,22 @@
         showUserData();
       });
       function showUserData() {
-        const Dummy = [
-          { id: 1, name: "정다희", todos: 12, completed: 4 },
-          { id: 2, name: "정다복", todos: 10, completed: 4 },
-        ];
-
-        for (let i = 0; i < Dummy.length; i++) {
-          makeData(
-            Dummy[i]["id"],
-            Dummy[i]["name"],
-            Dummy[i]["todos"],
-            Dummy[i]["completed"]
-          );
-        }
+        $.ajax({
+          type: "GET",
+          url: "/api/chart",
+          success: function (response) {
+            console.log(response["usercompleted_rate"]);
+            for (let i = 0; i < response["usercompleted_rate"].length; i++) {
+              console.log(response["usercompleted_rate"][i]);
+              makeData(
+                response["usercompleted_rate"][i][0],
+                response["usercompleted_rate"][i][0],
+                response["usercompleted_rate"][i][2],
+                response["usercompleted_rate"][i][1]
+              );
+            }
+          },
+        });
       }
 
       function makeData(id, name, todos, completed) {
@@ -100,7 +103,9 @@
       >
         <div class="flex flex-1">
           <div class="hidden lg:flex lg:gap-x-12">
-            <a href="#" class="text-sm font-semibold leading-6 text-gray-900"
+            <a
+              href="/myTodo"
+              class="text-sm font-semibold leading-6 text-gray-900"
               >my TodoList</a
             >
             <a href="#" class="text-sm font-semibold leading-6 text-gray-900"
