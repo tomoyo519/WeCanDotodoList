@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Title</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300&family=Orbit&family=Rajdhani&display=swap"
+      rel="stylesheet"
+    />
+    <link href="../dist/output.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"
+      integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.3.3/chart.min.js"
+      integrity="sha512-fMPPLjF/Xr7Ga0679WgtqoSyfUoQgdt8IIxJymStR5zV3Fyb6B3u/8DcaZ6R6sXexk5Z64bCgo2TYyn760EdcQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {},
+          },
+        },
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        showUserData();
+      });
+      function showUserData() {
+        const Dummy = [
+          { id: 1, name: "정다희", todos: 12, completed: 4 },
+          { id: 2, name: "정다복", todos: 10, completed: 4 },
+        ];
+
+        for (let i = 0; i < Dummy.length; i++) {
+          makeData(
+            Dummy[i]["id"],
+            Dummy[i]["name"],
+            Dummy[i]["todos"],
+            Dummy[i]["completed"]
+          );
+        }
+      }
+
+      function makeData(id, name, todos, completed) {
+        let tem_HTML = `<li class="flex">
+          <div class="w-1/4">
+            <div
+              class=" mt-6 text-lg font-semibold leading-8 tracking-tight text-gray-900"
+            >
+              ${name}
+        </div>
+        <div>${completed}  / ${todos} </div>
+      </div>
+        <div class="w-3/4">
+            <canvas class="text-base leading-7 text-gray-600" id=${id}></canvas>
+            <div>
+          </li>`;
+        $("#userList").append(tem_HTML);
+
+        const ctx = document.getElementById(id);
+
+        new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: ["완료", "진행예정"],
+            datasets: [
+              {
+                data: [completed, todos - completed],
+                borderWidth: 1,
+              },
+            ],
+            backgroundColor: ["rgb(255, 102, 102)", "rgb(153, 153, 255)"],
+            hoverOffset: 4,
+          },
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <header class="bg-white">
+      <nav
+        class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
+        aria-label="Global"
+      >
+        <div class="flex flex-1">
+          <div class="hidden lg:flex lg:gap-x-12">
+            <a href="#" class="text-sm font-semibold leading-6 text-gray-900"
+              >my TodoList</a
+            >
+            <a href="#" class="text-sm font-semibold leading-6 text-gray-900"
+              >tag List
+            </a>
+          </div>
+          <div class="flex lg:hidden">
+            <button
+              type="button"
+              class="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
+            >
+              <span class="sr-only">Open main menu</span>
+              <svg
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-1 justify-end">
+          <a href="/login" class="text-sm font-semibold leading-6 text-gray-900"
+            >Log in <span aria-hidden="true">&rarr;</span></a
+          >
+        </div>
+      </nav>
+      <!-- Mobile menu, show/hide based on menu open state. -->
+      <div class="lg:hidden" role="dialog" aria-modal="true">
+        <!-- Background backdrop, show/hide based on slide-over state. -->
+        <div class="fixed inset-0 z-10"></div>
+        <div
+          class="fixed inset-y-0 left-0 z-10 w-full overflow-y-auto bg-white px-6 py-6"
+        >
+          <div class="flex items-center justify-between">
+            <div class="flex flex-1">
+              <button
+                type="button"
+                class="-m-2.5 rounded-md p-2.5 text-gray-700"
+              >
+                <span class="sr-only">Close menu</span>
+                <svg
+                  class="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div class="flex flex-1 justify-end">
+              <a
+                href="/login"
+                class="text-sm font-semibold leading-6 text-gray-900"
+                >Log in <span aria-hidden="true">&rarr;</span></a
+              >
+            </div>
+          </div>
+          <div class="mt-6 space-y-2">
+            <a
+              href="#"
+              class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+              >Product</a
+            >
+            <a
+              href="#"
+              class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+              >Features</a
+            >
+            <a
+              href="#"
+              class="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+              >Company</a
+            >
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="py-24 sm:py-32">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8">
+        <div class="mx-auto max-w-2xl lg:mx-0">
+          <h2
+            class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+          >
+            야너두 오늘 할일 다 할수 있어!
+          </h2>
+          <div class="mt-6 text-lg leading-8 text-gray-600">
+            오늘 할일을 설정하여 알찬 하루를 보내보세요!
+          </div>
+          <div class="mt-1 text-lg leading-8 text-gray-600">
+            다른사람들에게 자극을 받아 오늘 할일을 모두 완료 해보세요.
+          </div>
+          <div class="mt-1 text-lg leading-8 text-gray-600">
+            다른 사람들은 어떤 목표를 세웠을지 살펴보세요.
+          </div>
+        </div>
+        <ul
+          role="list"
+          id="userList"
+          class="mx-auto mt-20 grid max-w-2xl grid-cols-2 gap-x-8 gap-y-16"
+        >
+          <!-- <li>
+            <h3
+              class="mt-6 text-lg font-semibold leading-8 tracking-tight text-gray-900"
+            >
+              Lindsay Walton
+            </h3>
+            <p class="text-base leading-7 text-gray-600">Front-end Developer</p>
+          </li>
+          <li>
+            <h3
+              class="mt-6 text-lg font-semibold leading-8 tracking-tight text-gray-900"
+            >
+              Lindsay Walton
+            </h3>
+            <p class="text-base leading-7 text-gray-600">Front-end Developer</p>
+          </li> -->
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
