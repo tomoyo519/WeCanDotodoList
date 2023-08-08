@@ -45,6 +45,10 @@
         });
       }
 
+      function editTodo(id) {
+        $("#" + id).children("input");
+      }
+
       function makeTodoUnit(myTodoList) {
         for (let i = 0; i < myTodoList.length; i++) {
           let tem_HTML = `
@@ -78,6 +82,7 @@
             id="pricing-plans-0-description-1"
             class="flex ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-right justify-end"
             ><a
+            onclick="editTodo(${myTodoList[i]["_id"]})"
               ><svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -94,6 +99,7 @@
               </svg>
             </a>
             <a
+             onclick="deleteTodo(${myTodoList[i]["_id"]})"
               ><svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -243,68 +249,70 @@
         </div>
       </div>
     </header>
-    <div class="justify-center items-center flex">
-      <div id="myTodoList">
-        <legend class="sr-only">Pricing plans</legend>
-        <div class="relative -space-y-px rounded-md bg-white">
-          <!-- Checked: "z-10 border-indigo-200 bg-indigo-50", Not Checked: "border-gray-200" -->
+    <div class="mx-auto max-w-3xl py-12">
+      <div class="">
+        <div id="myTodoList">
+          <legend class="sr-only">Pricing plans</legend>
+          <div class="reltive -space-y-px rounded-md bg-white">
+            <!-- Checked: "z-10 border-indigo-200 bg-indigo-50", Not Checked: "border-gray-200" -->
+
+            <!-- Checked: "z-10 border-indigo-200 bg-indigo-50", Not Checked: "border-gray-200" -->
+          </div>
 
           <!-- Checked: "z-10 border-indigo-200 bg-indigo-50", Not Checked: "border-gray-200" -->
         </div>
-
-        <!-- Checked: "z-10 border-indigo-200 bg-indigo-50", Not Checked: "border-gray-200" -->
       </div>
-    </div>
-    <form action="#" class="relative w-1/2">
-      <div
-        class="mt-3 p-3 overflow-hidden rounded-lg border border-gray-300 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500"
-      >
-        <label for="title" class="sr-only">해야 할일을 적어보세요</label>
-        <input
-          type="text"
-          name="title"
-          id="todoContent"
-          class="block w-full border-0 pt-2.5 text-lg font-medium placeholder:text-gray-400 focus:outline-none"
-          placeholder="해야 할일을 적어보세요"
-        />
 
-        <!-- Spacer element to match the height of the toolbar -->
-        <div aria-hidden="true">
-          <div class="py-2">
-            <div class="h-9"></div>
-          </div>
-          <div class="h-px"></div>
-          <div class="py-2">
-            <div class="py-px">
+      <div action="#" class="relative">
+        <div
+          class="mt-3 p-3 overflow-hidden rounded-lg border border-gray-300 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500"
+        >
+          <label for="title" class="sr-only">해야 할일을 적어보세요</label>
+          <input
+            type="text"
+            name="title"
+            id="todoContent"
+            class="block w-full border-0 pt-2.5 text-lg font-medium placeholder:text-gray-400 focus:outline-none"
+            placeholder="해야 할일을 적어보세요"
+          />
+
+          <!-- Spacer element to match the height of the toolbar -->
+          <div aria-hidden="true">
+            <div class="py-2">
               <div class="h-9"></div>
+            </div>
+            <div class="h-px"></div>
+            <div class="py-2">
+              <div class="py-px">
+                <div class="h-9"></div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div class="absolute inset-x-px bottom-0">
-        <!-- Actions: These are just examples to demonstrate the concept, replace/wire these up however makes sense for your project. -->
-        <div class="flex flex-nowrap justify-end space-x-2 px-2 py-2 sm:px-3">
-          <div class="flex-shrink-0">
-            <label id="listbox-label" class="sr-only">Add a label</label>
-            <div class="relative">
-              <span class="inline-flex rounded-md shadow-sm">
-                <label for="message-type" class="sr-only"
-                  >Select message type</label
-                >
-                <select
-                  id="message-type"
-                  name="message-type"
-                  class="-ml-px block w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-9 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                >
-                  <option>태그없음</option>
-                  <option>운동</option>
-                  <option>개발공부</option>
-                  <option>독서</option>
-                  <option>식단</option>
-                </select>
-              </span>
-              <!--
+        <div class="absolute inset-x-px bottom-0">
+          <!-- Actions: These are just examples to demonstrate the concept, replace/wire these up however makes sense for your project. -->
+          <div class="flex flex-nowrap justify-end space-x-2 px-2 py-2 sm:px-3">
+            <div class="flex-shrink-0">
+              <label id="listbox-label" class="sr-only">Add a label</label>
+              <div class="relative">
+                <span class="inline-flex rounded-md shadow-sm">
+                  <label for="message-type" class="sr-only"
+                    >Select message type</label
+                  >
+                  <select
+                    id="message-type"
+                    name="message-type"
+                    class="-ml-px block w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-9 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  >
+                    <option>태그없음</option>
+                    <option>운동</option>
+                    <option>개발공부</option>
+                    <option>독서</option>
+                    <option>식단</option>
+                  </select>
+                </span>
+                <!--
             Select popover, show/hide based on select state.
 
             Entering: ""
@@ -314,22 +322,23 @@
               From: "opacity-100"
               To: "opacity-0"
           -->
+              </div>
+            </div>
+          </div>
+          <div
+            class="flex justify-end space-x-3 border-t border-gray-200 px-2 py-2 sm:px-3"
+          >
+            <div class="flex-shrink-0 flex justify-end">
+              <button
+                onclick="addMyTodo()"
+                class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                추가하기
+              </button>
             </div>
           </div>
         </div>
-        <div
-          class="flex justify-end space-x-3 border-t border-gray-200 px-2 py-2 sm:px-3"
-        >
-          <div class="flex-shrink-0 flex justify-end">
-            <button
-              onclick="addMyTodo()"
-              class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
-              추가하기
-            </button>
-          </div>
-        </div>
       </div>
-    </form>
+    </div>
   </body>
 </html>
