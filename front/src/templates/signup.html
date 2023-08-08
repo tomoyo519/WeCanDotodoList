@@ -39,23 +39,27 @@
 
     <script>
       function signup(){
-
+        console.log('signup 버튼 눌림')
         let signupName = $("#name").val();
         let signupId = $("#id").val();
         let signupPw = $("#password").val();
         let signupPw2 = $("#passwordcheck").val();
-        $.ajax({
+       $.ajax({
           type:"POST",
-          url:"/api/register",
+          url:"/api/signup",
           data: {'username_give': signupName, 'id_give':signupId, 'pw_give':signupPw, 'pw2_give': signupPw2},
           success: function(res){
             console.log('성공했을때,',res);
+            alert('성공!')
+
           }
         })
       }
     </script>
   </head>
   <body>
+
+ 
     <header class="bg-white">
       <nav
         class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
