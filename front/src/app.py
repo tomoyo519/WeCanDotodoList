@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, request, flash
+from flask import Flask, render_template, jsonify, request, flash, redirect
 from pymongo import MongoClient
 app = Flask(__name__)
 
@@ -29,7 +29,11 @@ def login():
 
 @app.route('/signup', methods=['GET','POST'])
 def signup():
-   return render_template('signup.html')
+    if request.method == 'GET':
+        return render_template('signup.html')
+    else:
+        return render_template('login.html')
+   
 
 
    
@@ -52,7 +56,7 @@ def api_register():
 
 	db.user.insert_one(user_info)
 
-	return jsonify({'result': 'success'})
+	return  render_template('login.html')
 
 @app.route('/api/login', methods=['POST'])
 def api_login():

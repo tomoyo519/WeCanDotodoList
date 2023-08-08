@@ -49,9 +49,7 @@
           url:"/api/signup",
           data: {'username_give': signupName, 'id_give':signupId, 'pw_give':signupPw, 'pw2_give': signupPw2},
           success: function(res){
-            console.log('성공했을때,',res);
-            alert('성공!')
-
+            alert('회원 가입이 완료 되었습니다! 로그인 해주세요.');
           }
         })
       }
