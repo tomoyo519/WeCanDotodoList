@@ -93,11 +93,12 @@ def api_register():
 	if pw_receive != pw2_receive:
 		return jsonify({'result': False, 'msg': '비밀번호가 일치하지 않습니다.'})
 	
-	username_cnt = len(list[db.user.find({"user_id": username_receive}, {'_id': 0})])
+	username_cnt = len(list(db.user.find({"user_id": username_receive}, {'_id': 0})))
+	print('thisisusername', username_cnt)
 	if username_cnt > 0:
 		return jsonify({'result': False, 'msg': "중복된 성명입니다."})
 
-	userid_cnt = len(list[db.user.find({"user_id": id_receive}, {'_id': 0})])
+	userid_cnt = len(list(db.user.find({"user_id": id_receive}, {'_id': 0})))
 	if userid_cnt > 0:
   		return jsonify({'result': False, 'msg': "중복된 성명입니다."})
 
