@@ -2,7 +2,7 @@ from bson import ObjectId
 from flask import Flask, render_template, jsonify, request, flash, redirect, make_response
 from pymongo import MongoClient
 from flask_jwt_extended import *
-from jose.backends.cryptography_backend import CryptographyRSAKey
+
 
 app = Flask(__name__)
 # JWT 매니저 활성화
@@ -126,10 +126,11 @@ def api_login():
 
 	result = db.user.find_one({'user_id':id_receive, 'user_pw':pw_hash}, {'_id': 0})
 	
-
+	if id_receive == "" or pw_receive  == "":
+		return jsonify({'result': False, 'message':'입력되지 않은 값이 있습니다.'})
 
 	if result is None:
-		return jsonify({'message': 'Invalid credentials'}), 401
+		return jsonify({'message': '로그인에 실패했습니다. 아이디와 비밀번호를 재확인 해주세요.'}), 401
 
 	token = create_jwt_token(result)
 	response = make_response(jsonify({'message': 'success'}), 200)
