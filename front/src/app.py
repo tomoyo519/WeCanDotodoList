@@ -1,7 +1,24 @@
 from bson import ObjectId
-from flask import Flask, render_template, jsonify, request, flash, redirect
+from flask import Flask, render_template, jsonify, request, flash, redirect, make_response
 from pymongo import MongoClient
+from flask_jwt_extended import *
+from jose.backends.cryptography_backend import CryptographyRSAKey
+
 app = Flask(__name__)
+# JWT 매니저 활성화
+app.config['SECRET_KEY'] = 'your_secret_key'
+
+app.config.update(DEBUG = True, JWT_SECRET_KEY = "thisissecertkey" )
+jwt = JWTManager(app)
+
+# app.config['JWT_COOKIE_SECURE'] = False # https를 통해서만 cookie가 갈 수 있는지 (production 에선 True)
+# app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+# app.config['JWT_ACCESS_COOKIE_PATH'] = '/' # access cookie를 보관할 url (Frontend 기준)
+# app.config['JWT_REFRESH_COOKIE_PATH'] = '/' # refresh cookie를 보관할 url (Frontend 기준)
+# # CSRF 토큰 역시 생성해서 쿠키에 저장할지
+# # (이 경우엔 프론트에서 접근해야하기 때문에 httponly가 아님)
+# app.config['JWT_COOKIE_CSRF_PROTECT'] = True
+
 
 # 회원가입시 비번 암호화 -> 개발자(나)가 회원 비번 못보도록.
 import hashlib
@@ -12,12 +29,11 @@ import datetime
 # 같이 설치(jwt, pyJWT)
 import jwt
 
-from datetime import datetime
+
 
 client = MongoClient('localhost',27017)
 db = client.dbtodolist
 
-SECRET_KEY = 'SPARTA'
 
 # now = datetime.now()
 # now_text = now.strftime("%Y/%m/%d")
@@ -27,6 +43,13 @@ SECRET_KEY = 'SPARTA'
 # db.todolist.insert_one({'user_id':3,'user_name':3, 'content':'아침 12시에 문지캠퍼스 한바퀴 뛰기', 'datetime':now_text, 'complete':True, 'tag':'운동'})
 
 
+def create_jwt_token(user_id):
+    payload = {
+        'sub': user_id,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1)  # 1일 후 만료
+    }
+    token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+    return token
 
 @app.route('/')
 def home():
@@ -75,6 +98,8 @@ def api_register():
 
 	return  render_template('login.html')
 
+
+
 @app.route('/api/login', methods=['POST'])
 def api_login():
 	id_receive = request.form['id_give']
@@ -83,22 +108,20 @@ def api_login():
 
 	pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
 
-	result = db.user.find_one({'user_id':id_receive, 'user_pw':pw_hash})
+	result = db.user.find_one({'user_id':id_receive, 'user_pw':pw_hash}, {'_id': 0})
 	
 
 
-	if result is not None:
-			payload = {
-					'id': id_receive,
-					'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=300)
-			}
-			token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-			# token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
+	if result is None:
+		return jsonify({'message': 'Invalid credentials'}), 401
 
-			# 토큰 주기
-			return jsonify({'result':'success', 'token':token})
-	else:
-			return jsonify({'result':'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
+	token = create_jwt_token(result)
+	response = make_response(jsonify({'message': 'Login successful'}), 200)
+	response.set_cookie('jwt_token', token)
+	return response
+			
+
+
 
 
 @app.route('/api/chart', methods=['GET'])
