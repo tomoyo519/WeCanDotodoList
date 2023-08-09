@@ -1,3 +1,4 @@
+from bson import ObjectId
 from flask import Flask, render_template, jsonify, request, flash, redirect
 from pymongo import MongoClient
 app = Flask(__name__)
@@ -18,12 +19,12 @@ db = client.dbtodolist
 
 SECRET_KEY = 'SPARTA'
 
-now = datetime.now()
-now_text = now.strftime("%Y/%m/%d")
-db.todolist.insert_one({'user_id':3,'user_name':3, 'content':'아침 9시에 문지캠퍼스 한바퀴 뛰기', 'datetime':now_text, 'complete':False, 'tag':'운동'})
-db.todolist.insert_one({'user_id':3,'user_name':3, 'content':'아침 10시에 문지캠퍼스 한바퀴 뛰기', 'datetime':now_text, 'complete':False, 'tag':'운동'})
-db.todolist.insert_one({'user_id':3,'user_name':3, 'content':'아침 11시에 문지캠퍼스 한바퀴 뛰기', 'datetime':now_text, 'complete':False, 'tag':'운동'})
-db.todolist.insert_one({'user_id':3,'user_name':3, 'content':'아침 12시에 문지캠퍼스 한바퀴 뛰기', 'datetime':now_text, 'complete':True, 'tag':'운동'})
+# now = datetime.now()
+# now_text = now.strftime("%Y/%m/%d")
+# db.todolist.insert_one({'user_id':3,'user_name':3, 'content':'아침 9시에 문지캠퍼스 한바퀴 뛰기', 'datetime':now_text, 'complete':False, 'tag':'운동'})
+# db.todolist.insert_one({'user_id':3,'user_name':3, 'content':'아침 10시에 문지캠퍼스 한바퀴 뛰기', 'datetime':now_text, 'complete':False, 'tag':'운동'})
+# db.todolist.insert_one({'user_id':3,'user_name':3, 'content':'아침 11시에 문지캠퍼스 한바퀴 뛰기', 'datetime':now_text, 'complete':False, 'tag':'운동'})
+# db.todolist.insert_one({'user_id':3,'user_name':3, 'content':'아침 12시에 문지캠퍼스 한바퀴 뛰기', 'datetime':now_text, 'complete':True, 'tag':'운동'})
 
 
 
@@ -179,6 +180,7 @@ def complete_todolist():
 	return jsonify({'result': 'success'})
 
 
+#수수정버튼 누른 todo 정보 받아노는것
 @app.route('/api/edit', methods=['POST'])
 def edit_todolist():
     objectid_receive = request.form['objectid_give']
@@ -187,6 +189,7 @@ def edit_todolist():
     return jsonify({'result': 'success', 'edittodolist': editone})
 
 
+# 수정한거를 db에 적용하는것
 @app.route('/api/save', methods=['POST'])
 def editsave_todolist():
 	objectid_receive = request.form['objectid_give']

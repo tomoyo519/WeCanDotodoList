@@ -35,6 +35,7 @@
       });
 
       function showMyTodo() {
+        $("#myTodoList").html("");
         $.ajax({
           type: "GET",
           url: "/api/read_mytodolist",
@@ -46,16 +47,115 @@
       }
 
       function editTodo(id) {
-        $("#" + id).children("input");
+        console.log("editmode", id);
+        $("#" + id)
+          .children("span")
+          .hide();
+
+        $.ajax({
+          type: "POST",
+          url: "/api/edit",
+          data: {
+            objectid_give: id,
+          },
+          success: function (res) {
+            let tagOption = `
+             <span class="inline-flex rounded-md shadow-sm">
+                  <label for="message-type" class="sr-only"
+                    >Select message type</label
+                  >
+                  <select
+                    id="edit_message-type"
+                    name="message-type"
+                    class="-ml-px block w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-9 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  >
+                    <option>태그없음</option>
+                    <option>운동</option>
+                    <option>개발공부</option>
+                    <option>독서</option>
+                    <option>식단</option>
+                  </select>
+                </span>`;
+
+            let saveButtom = `
+              <span
+            id="pricing-plans-0-description-1"
+            class="flex ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-right justify-end"
+            >
+            <button
+            type="button"
+            onclick="saveTodo('${id}')">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
+            </svg>
+            </button>
+            </span>
+            `;
+            $("#t" + id)
+              .children("span")
+              .html("");
+            $("#t" + id).append(tagOption);
+            $("#pricing-plans-0-description-1").html("");
+            $("#buttonList").append(saveButtom);
+            $("#" + id)
+              .children("span")
+              .html("");
+            alert("TO DO를 수정할 수 있어요!");
+            let tmp = `
+            <input id=${
+              "e" + id
+            } class="ml-3 font-medium border-2 rounded-md border-indigo-200 w-full" placeholder="수정할 내용을 입력하세요" value="${
+              res.edittodolist.content
+            }"/>
+            `;
+            $("#" + id).append(tmp);
+          },
+        });
+      }
+
+      function saveTodo(id) {
+        let editContent = $("#e" + id).val();
+        let editTag = $("#edit_message-type").val();
+
+        $.ajax({
+          type: "POST",
+          url: "/api/save",
+          data: {
+            objectid_give: id,
+            content_give: editContent,
+            tag_give: editTag,
+          },
+          success: function (res) {
+            alert("수정완료!");
+            showMyTodo();
+          },
+        });
+      }
+
+      function deleteTodo(id) {
+        console.log("deletemode");
+        $.ajax({
+          type: "POST",
+          url: "/api/delete",
+          data: {
+            objectid_give: id,
+          },
+          success: function (res) {
+            alert("삭제완료!");
+            showMyTodo();
+          },
+        });
       }
 
       function makeTodoUnit(myTodoList) {
         for (let i = 0; i < myTodoList.length; i++) {
+          id = myTodoList[i]["_id"];
           let tem_HTML = `
         <label
+
           class="rounded-md rounded-tr-md relative flex cursor-pointer flex-col border p-4 focus:outline-none md:grid md:grid-cols-3 md:pl-4 md:pr-6"
         >
-          <span class="flex items-center text-sm">
+          <span class="flex items-center text-sm"    id=${id}>
             <input
               type="radio"
               name="pricing-plan"
@@ -64,25 +164,24 @@
               aria-labelledby="pricing-plans-0-label"
               aria-describedby="pricing-plans-0-description-0 pricing-plans-0-description-1"
             />
-            <!-- Checked: "text-indigo-900", Not Checked: "text-gray-900" -->
             <span id="pricing-plans-0-label" class="ml-3 font-medium"
               >${myTodoList[i]["content"]}</span
             >
           </span>
           <span
-            id="pricing-plans-0-description-0"
+            id=${"t" + id}
             class="ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-center"
           >
-            <!-- Checked: "text-indigo-900", Not Checked: "text-gray-900" -->
             <span class="font-medium">${myTodoList[i]["tag"]}</span>
-            <!-- Checked: "text-indigo-700", Not Checked: "text-gray-500" -->
           </span>
-          <!-- Checked: "text-indigo-700", Not Checked: "text-gray-500" -->
+          <div id="buttonList">
           <span
             id="pricing-plans-0-description-1"
             class="flex ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-right justify-end"
-            ><a
-            onclick="editTodo(${myTodoList[i]["_id"]})"
+            ><button
+
+            type="button"
+            onclick="editTodo('${myTodoList[i]["_id"]}')"
               ><svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -97,9 +196,10 @@
                   d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
                 />
               </svg>
-            </a>
-            <a
-             onclick="deleteTodo(${myTodoList[i]["_id"]})"
+            </button>
+            <button
+
+             onclick="deleteTodo('${myTodoList[i]["_id"]}')"
               ><svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -113,8 +213,9 @@
                   stroke-linejoin="round"
                   d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
                 />
-              </svg> </a
+              </svg> </button
           ></span>
+          </div>
         </label>
       `;
           $("#myTodoList").append(tem_HTML);
@@ -130,8 +231,8 @@
           url: "/api/post",
 
           data: {
-            id_give: 2,
-            username_give: 2,
+            id_give: "2",
+            username_give: "2",
             content_give: content,
             tag_give: tag,
           },
@@ -149,6 +250,19 @@
         class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
         aria-label="Global"
       >
+        <div
+          class="flex md:absolute md:inset-y-0 md:left-0 lg:static xl:col-span-2"
+        >
+          <div class="flex flex-shrink-0 items-center pr-5">
+            <a href="/">
+              <img
+                class="h-8 w-auto"
+                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+                alt="Your Company"
+              />
+            </a>
+          </div>
+        </div>
         <div class="flex flex-1">
           <div class="hidden lg:flex lg:gap-x-12">
             <a
@@ -312,16 +426,6 @@
                     <option>식단</option>
                   </select>
                 </span>
-                <!--
-            Select popover, show/hide based on select state.
-
-            Entering: ""
-              From: ""
-              To: ""
-            Leaving: "transition ease-in duration-100"
-              From: "opacity-100"
-              To: "opacity-0"
-          -->
               </div>
             </div>
           </div>

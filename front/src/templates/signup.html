@@ -53,6 +53,11 @@
           }
         })
       }
+
+      function gethome(){
+        console.log('집으로 드가자')
+        window.location.replace('/')
+      }
     </script>
   </head>
   <body>
@@ -63,9 +68,16 @@
         class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8"
         aria-label="Global"
       >
+     <div class="flex md:absolute md:inset-y-0 md:left-0 lg:static xl:col-span-2">
+        <div class="flex flex-shrink-0 items-center pr-5">
+          <a href="/">
+            <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company">
+          </a>
+        </div>
+      </div>
         <div class="flex flex-1">
-          <div class="hidden lg:flex lg:gap-x-12">
-            <a href="#" class="text-sm font-semibold leading-6 text-gray-900"
+          <div class="hidden lg:flex lg:gap-x-12 ">
+            <a  href="/myTodo" class="text-sm font-semibold leading-6 text-gray-900"
               >my TodoList</a
             >
             <a href="#" class="text-sm font-semibold leading-6 text-gray-900"
