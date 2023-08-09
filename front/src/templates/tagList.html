@@ -79,12 +79,6 @@
       }
 
       function getTagTodo(item) {
-        const jwtToken = getCookie("jwt_token");
-        if (jwtToken) {
-          const decodedToken = parseJwt(jwtToken);
-          if (decodedToken) {
-          }
-        }
         let newItem = item.slice(1);
         console.log(newItem);
         $.ajax({
@@ -99,16 +93,54 @@
       function makeTodoList(list, tagName) {
         console.log(list, tagName.slice(1));
         let result = list.filter((word) => word.tag === tagName.slice(1));
-        makeTodoUnit(result);
+
+        function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(";").shift();
+        }
+
+        function parseJwt(token) {
+          try {
+            const base64Url = token.split(".")[1];
+            const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+            const jsonPayload = decodeURIComponent(
+              atob(base64)
+                .split("")
+                .map(function (c) {
+                  return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+                })
+                .join("")
+            );
+            return JSON.parse(jsonPayload);
+          } catch (error) {
+            return null;
+          }
+        }
+
+        const jwtToken = getCookie("jwt_token");
+        if (jwtToken) {
+          const decodedToken = parseJwt(jwtToken);
+          if (decodedToken) {
+            let final = result.filter(
+              (word) => word.user_id !== decodedToken.sub.user_id
+            );
+            makeTodoUnit(final);
+          } else {
+            console.log("Invalid JWT Token");
+          }
+        } else {
+          console.log("JWT Token not found in cookie");
+        }
       }
 
       function makeTodoUnit(myTodoList) {
+        console.log("makeTodoUnit(myTOdoList):,", myTodoList);
         $("#list_container").html("");
         for (let i = 0; i < myTodoList.length; i++) {
           id = myTodoList[i]["_id"];
           let tem_HTML = `
         <label
-
           class="rounded-md rounded-tr-md relative flex flex items-center justify-center  cursor-pointer flex-col border p-4 focus:outline-none md:grid md:grid-cols-3 md:pl-4 md:pr-6"
         >
           <span class="flex items-center justify-center text-sm"    id=${id}>
@@ -144,21 +176,56 @@
       }
 
       function editTodo(id, content, tag) {
-        console.log(content, tag);
-        $.ajax({
-          type: "POST",
-          url: "/api/post",
+        function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(";").shift();
+        }
 
-          data: {
-            id_give: "2",
-            username_give: "2",
-            content_give: content,
-            tag_give: tag,
-          },
-          success: function (res) {
-            alert("추가가 완료 되었어요!");
-          },
-        });
+        function parseJwt(token) {
+          try {
+            const base64Url = token.split(".")[1];
+            const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+            const jsonPayload = decodeURIComponent(
+              atob(base64)
+                .split("")
+                .map(function (c) {
+                  return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+                })
+                .join("")
+            );
+            return JSON.parse(jsonPayload);
+          } catch (error) {
+            return null;
+          }
+        }
+
+        const jwtToken = getCookie("jwt_token");
+        if (jwtToken) {
+          const decodedToken = parseJwt(jwtToken);
+          if (decodedToken) {
+            console.log("login 확인 되었습니다.");
+            $.ajax({
+              type: "POST",
+              url: "/api/post",
+              data: {
+                id_give: decodedToken.sub.user_id,
+                username_give: decodedToken.sub.user_name,
+                content_give: content,
+                tag_give: tag,
+              },
+              success: function (res) {
+                alert("추가가 완료 되었어요!");
+              },
+            });
+          } else {
+            console.log("Invalid JWT Token");
+          }
+        } else {
+          console.log("JWT Token not found in cookie");
+        }
+
+        console.log(content, tag);
       }
     </script>
   </head>
