@@ -94,7 +94,6 @@ def api_register():
 		return jsonify({'result': False, 'msg': '비밀번호가 일치하지 않습니다.'})
 	
 	username_cnt = len(list(db.user.find({"user_id": username_receive}, {'_id': 0})))
-	print('thisisusername', username_cnt)
 	if username_cnt > 0:
 		return jsonify({'result': False, 'msg': "중복된 성명입니다."})
 
@@ -112,7 +111,7 @@ def api_register():
 
 	db.user.insert_one(user_info)
 
-	return  render_template('login.html')
+	return   jsonify({'result': True})
 
 
 

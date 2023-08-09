@@ -104,11 +104,11 @@
           }else{
 
             alert('회원 가입이 완료 되었습니다! 로그인 해주세요.');        
-            let signupName = $("#name").val();
+            let signupName = $("#name").val('');
             let signupId = $("#id").val('');
             let signupPw = $("#password").val('');
             let signupPw2 = $("#passwordcheck").val('');
-            
+            window.location.replace('/login')
           }
           }
         })
