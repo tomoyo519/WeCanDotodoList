@@ -30,7 +30,6 @@ import datetime
 import jwt
 
 
-
 client = MongoClient('localhost',27017)
 db = client.dbtodolist
 
@@ -158,33 +157,45 @@ def chart():
 
 
 @app.route('/api/read_mytodolist', methods=['GET'])
+
 def read_mytodolist():
 	result = list(db.todolist.find({}))
 	for todolist in result:
 		todolist['_id'] = str(todolist['_id'])
-	
+
 	return jsonify({'result': 'success', 'mytodolist': result})
 
 
+@app.route('/api/read_onlymytodolist', methods=['POST'])
+
+def read_myonlytodolist():
+	id_receive = request.form['id_give']
+	result = list(db.todolist.find({'user_id' : id_receive}, {'_id':0}))
+	print('result', result)
+
+	return jsonify({'result': 'success', 'mytodolist': result})
+
+
+
 @app.route('/api/post', methods=['POST'])
-@jwt_required
+
 def post_todolist():
 	id_receive = request.form['id_give']
 	username_receive = request.form['username_give']
 	content_receive = request.form['content_give']
 	tag_receive = request.form['tag_give']
 
-	current_user = get_jwt_identity
-	print("current_user:", current_user)
+
+
 # vc-날짜추가
-	now = datetime.now()
-	now_text = now.strftime("%Y/%m/%d")
+	# now = datetime.now()
+	# now_text = now.strftime("%Y/%m/%d")
 	todolist = {
 		'user_id' : id_receive,
 		'user_name' : username_receive,
 		'content' : content_receive,
 		'tag' : tag_receive,
-		'datetime' : now_text,
+		'datetime' : "2023/08/09",
 		'complete' : False
 	}
 

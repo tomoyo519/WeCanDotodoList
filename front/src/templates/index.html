@@ -122,7 +122,7 @@
 
         const ctx = document.getElementById(id);
 
-        new Chart(ctx, {
+        let newChart = new Chart(ctx, {
           type: "doughnut",
           data: {
             labels: ["완료", "진행예정"],

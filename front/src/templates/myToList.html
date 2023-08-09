@@ -31,19 +31,71 @@
 
     <script>
       $(document).ready(function () {
-        showMyTodo();
+        let result = checkLogin();
+        console.log("thisisresult", result);
+        // if (!result) {
+        //
+        //}
       });
 
-      function showMyTodo() {
+      function checkLogin() {
+        function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(";").shift();
+        }
+
+        function parseJwt(token) {
+          try {
+            const base64Url = token.split(".")[1];
+            const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+            const jsonPayload = decodeURIComponent(
+              atob(base64)
+                .split("")
+                .map(function (c) {
+                  return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+                })
+                .join("")
+            );
+            return JSON.parse(jsonPayload);
+          } catch (error) {
+            return null;
+          }
+        }
+
+        const jwtToken = getCookie("jwt_token");
+        if (jwtToken) {
+          const decodedToken = parseJwt(jwtToken);
+          if (decodedToken) {
+            console.log("토큰 있듬, Decoded JWT Token:", decodedToken);
+            showMyTodo(decodedToken["sub"]["user_id"]);
+            // 여기에서 필요한 작업을 수행하세요.
+          } else {
+            console.log("Invalid JWT Token");
+          }
+        } else {
+          console.log("JWT Token not found in cookie");
+          alert("로그인 후 이용할수 수 있어요!");
+          window.location.replace("/login");
+        }
+      }
+
+      function showMyTodo(id) {
         $("#myTodoList").html("");
-        $.ajax({
-          type: "GET",
-          url: "/api/read_mytodolist",
-          success: function (res) {
-            console.log(res);
-            makeTodoUnit(res.mytodolist);
-          },
-        });
+        console.log("showmytodo", id);
+        if (id) {
+          $.ajax({
+            type: "POST",
+            url: "/api/read_onlymytodolist",
+            data: {
+              id_give: id,
+            },
+            success: function (res) {
+              console.log(res);
+              makeTodoUnit(res.mytodolist);
+            },
+          });
+        }
       }
 
       function editTodo(id) {
