@@ -75,7 +75,7 @@
             $("#loginContainer").children("a").html("");
             let loginCompleted = `
               <a href="" class="text-sm font-semibold leading-6 text-gray-900"
-            >Welcome!</a
+            >Welcome! ${decodedToken.sub.user_name}</a
           >
             `;
             $("#loginContainer").append(loginCompleted);
