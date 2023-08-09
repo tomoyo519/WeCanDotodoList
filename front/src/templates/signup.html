@@ -38,8 +38,56 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
+
+       $(document).ready(function () {
+        checkLogin();
+      });
+      function checkLogin() {
+        function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(";").shift();
+        }
+
+        function parseJwt(token) {
+          try {
+            const base64Url = token.split(".")[1];
+            const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+            const jsonPayload = decodeURIComponent(
+              atob(base64)
+                .split("")
+                .map(function (c) {
+                  return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+                })
+                .join("")
+            );
+            return JSON.parse(jsonPayload);
+          } catch (error) {
+            return null;
+          }
+        }
+
+        const jwtToken = getCookie("jwt_token");
+        if (jwtToken) {
+          const decodedToken = parseJwt(jwtToken);
+          if (decodedToken) {
+            console.log("login 확인 되었습니다.");
+            $("#loginContainer").children("a").html("");
+            let loginCompleted = `
+              <a href="" class="text-sm font-semibold leading-6 text-gray-900"
+            >Welcome!</a
+          >
+            `;
+            $("#loginContainer").append(loginCompleted);
+          } else {
+            console.log("Invalid JWT Token");
+          }
+        } else {
+          console.log("JWT Token not found in cookie");
+        }
+      }
       function signup(){
-        console.log('signup 버튼 눌림')
+        
         let signupName = $("#name").val();
         let signupId = $("#id").val();
         let signupPw = $("#password").val();
@@ -48,11 +96,13 @@
           type:"POST",
           url:"/api/signup",
           data: {'username_give': signupName, 'id_give':signupId, 'pw_give':signupPw, 'pw2_give': signupPw2},
-          success: function(res){        let signupName = $("#name").val();
-        let signupId = $("#id").val('');
-        let signupPw = $("#password").val('');
-        let signupPw2 = $("#passwordcheck").val('');
-            alert('회원 가입이 완료 되었습니다! 로그인 해주세요.');
+          success: function(res){
+          alert('회원 가입이 완료 되었습니다! 로그인 해주세요.');        
+          let signupName = $("#name").val();
+          let signupId = $("#id").val('');
+          let signupPw = $("#password").val('');
+          let signupPw2 = $("#passwordcheck").val('');
+            
           }
         })
       }
@@ -111,7 +161,7 @@
           </div>
         </div>
 
-        <div class="flex flex-1 justify-end">
+        <div class="flex flex-1 justify-end" id="loginContainer">
           <a href="/login" class="text-sm font-semibold leading-6 text-gray-900"
             >Log in <span aria-hidden="true">&rarr;</span></a
           >

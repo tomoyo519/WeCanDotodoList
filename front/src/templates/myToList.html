@@ -67,7 +67,14 @@
         if (jwtToken) {
           const decodedToken = parseJwt(jwtToken);
           if (decodedToken) {
-            console.log("토큰 있듬, Decoded JWT Token:", decodedToken);
+            console.log("login 확인 되었습니다.", decodedToken);
+            $("#loginContainer").children("a").html("");
+            let loginCompleted = `
+                <a href="" class="text-sm font-semibold leading-6 text-gray-900"
+              >Welcome!</a
+            >
+              `;
+            $("#loginContainer").append(loginCompleted);
             showMyTodo(decodedToken["sub"]["user_id"]);
             // 여기에서 필요한 작업을 수행하세요.
           } else {
@@ -112,37 +119,37 @@
           },
           success: function (res) {
             let tagOption = `
-             <span class="inline-flex rounded-md shadow-sm">
-                  <label for="message-type" class="sr-only"
-                    >Select message type</label
-                  >
-                  <select
-                    id="edit_message-type"
-                    name="message-type"
-                    class="-ml-px block w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-9 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  >
-                    <option>태그없음</option>
-                    <option>운동</option>
-                    <option>개발공부</option>
-                    <option>독서</option>
-                    <option>식단</option>
-                  </select>
-                </span>`;
+               <span class="inline-flex rounded-md shadow-sm">
+                    <label for="message-type" class="sr-only"
+                      >Select message type</label
+                    >
+                    <select
+                      id="edit_message-type"
+                      name="message-type"
+                      class="-ml-px block w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-9 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    >
+                      <option>태그없음</option>
+                      <option>운동</option>
+                      <option>개발공부</option>
+                      <option>독서</option>
+                      <option>식단</option>
+                    </select>
+                  </span>`;
 
             let saveButtom = `
-              <span
-            id="pricing-plans-0-description-1"
-            class="flex ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-right justify-end"
-            >
-            <button
-            type="button"
-            onclick="saveTodo('${id}')">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
-            </svg>
-            </button>
-            </span>
-            `;
+                <span
+              id="pricing-plans-0-description-1"
+              class="flex ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-right justify-end"
+              >
+              <button
+              type="button"
+              onclick="saveTodo('${id}')">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13" />
+              </svg>
+              </button>
+              </span>
+              `;
             $("#t" + id)
               .children("span")
               .html("");
@@ -154,12 +161,12 @@
               .html("");
             alert("TO DO를 수정할 수 있어요!");
             let tmp = `
-            <input id=${
-              "e" + id
-            } class="ml-3 font-medium border-2 rounded-md border-indigo-200 w-full" placeholder="수정할 내용을 입력하세요" value="${
+              <input id=${
+                "e" + id
+              } class="ml-3 font-medium border-2 rounded-md border-indigo-200 w-full" placeholder="수정할 내용을 입력하세요" value="${
               res.edittodolist.content
             }"/>
-            `;
+              `;
             $("#" + id).append(tmp);
           },
         });
@@ -179,7 +186,48 @@
           },
           success: function (res) {
             alert("수정완료!");
-            showMyTodo();
+
+            function getCookie(name) {
+              const value = `; ${document.cookie}`;
+              const parts = value.split(`; ${name}=`);
+              if (parts.length === 2) return parts.pop().split(";").shift();
+            }
+
+            function parseJwt(token) {
+              try {
+                const base64Url = token.split(".")[1];
+                const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+                const jsonPayload = decodeURIComponent(
+                  atob(base64)
+                    .split("")
+                    .map(function (c) {
+                      return (
+                        "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)
+                      );
+                    })
+                    .join("")
+                );
+                return JSON.parse(jsonPayload);
+              } catch (error) {
+                return null;
+              }
+            }
+
+            const jwtToken = getCookie("jwt_token");
+            if (jwtToken) {
+              const decodedToken = parseJwt(jwtToken);
+              if (decodedToken) {
+                console.log("login 확인 되었습니다.", decodedToken);
+                showMyTodo(decodedToken.sub.user_id);
+                // 여기에서 필요한 작업을 수행하세요.
+              } else {
+                console.log("Invalid JWT Token");
+              }
+            } else {
+              console.log("JWT Token not found in cookie");
+              alert("로그인 후 이용할수 수 있어요!");
+              window.location.replace("/login");
+            }
           },
         });
       }
@@ -194,7 +242,48 @@
           },
           success: function (res) {
             alert("삭제완료!");
-            showMyTodo();
+
+            function getCookie(name) {
+              const value = `; ${document.cookie}`;
+              const parts = value.split(`; ${name}=`);
+              if (parts.length === 2) return parts.pop().split(";").shift();
+            }
+
+            function parseJwt(token) {
+              try {
+                const base64Url = token.split(".")[1];
+                const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+                const jsonPayload = decodeURIComponent(
+                  atob(base64)
+                    .split("")
+                    .map(function (c) {
+                      return (
+                        "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)
+                      );
+                    })
+                    .join("")
+                );
+                return JSON.parse(jsonPayload);
+              } catch (error) {
+                return null;
+              }
+            }
+
+            const jwtToken = getCookie("jwt_token");
+            if (jwtToken) {
+              const decodedToken = parseJwt(jwtToken);
+              if (decodedToken) {
+                console.log("login 확인 되었습니다.", decodedToken);
+                showMyTodo(decodedToken.sub.user_id);
+                // 여기에서 필요한 작업을 수행하세요.
+              } else {
+                console.log("Invalid JWT Token");
+              }
+            } else {
+              console.log("JWT Token not found in cookie");
+              alert("로그인 후 이용할수 수 있어요!");
+              window.location.replace("/login");
+            }
           },
         });
       }
@@ -203,73 +292,73 @@
         for (let i = 0; i < myTodoList.length; i++) {
           id = myTodoList[i]["_id"];
           let tem_HTML = `
-        <label
+          <label
 
-          class="rounded-md rounded-tr-md relative flex cursor-pointer flex-col border p-4 m-3 focus:outline-none md:grid md:grid-cols-3 md:pl-4 md:pr-6"
-        >
-          <span class="flex items-center text-sm"    id=${id}>
-            <input
-              type="radio"
-              name="pricing-plan"
-              value="Startup"
-              class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-600 active:ring-2 active:ring-offset-2 active:ring-indigo-600"
-              aria-labelledby="pricing-plans-0-label"
-              aria-describedby="pricing-plans-0-description-0 pricing-plans-0-description-1"
-            />
-            <span id="pricing-plans-0-label" class="ml-3 font-medium"
-              >${myTodoList[i]["content"]}</span
-            >
-          </span>
-          <span
-            id=${"t" + id}
-            class="ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-center"
+            class="rounded-md rounded-tr-md relative flex cursor-pointer flex-col border p-4 m-3 focus:outline-none md:grid md:grid-cols-3 md:pl-4 md:pr-6"
           >
-            <span class="font-medium">${myTodoList[i]["tag"]}</span>
-          </span>
-          <div id=${id + "buttonList"}>
-          <span
-            id="pricing-plans-0-description-1"
-            class="flex ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-right justify-end"
-            ><button
-
-            type="button"
-            onclick="editTodo('${myTodoList[i]["_id"]}')"
-              ><svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6"
+            <span class="flex items-center text-sm"    id=${id}>
+              <input
+                type="radio"
+                name="pricing-plan"
+                value="Startup"
+                class="h-4 w-4 text-indigo-600 border-gray-300 focus:ring-indigo-600 active:ring-2 active:ring-offset-2 active:ring-indigo-600"
+                aria-labelledby="pricing-plans-0-label"
+                aria-describedby="pricing-plans-0-description-0 pricing-plans-0-description-1"
+              />
+              <span id="pricing-plans-0-label" class="ml-3 font-medium"
+                >${myTodoList[i]["content"]}</span
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
-                />
-              </svg>
-            </button>
-            <button
+            </span>
+            <span
+              id=${"t" + id}
+              class="ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-center"
+            >
+              <span class="font-medium">${myTodoList[i]["tag"]}</span>
+            </span>
+            <div id=${id + "buttonList"}>
+            <span
+              id="pricing-plans-0-description-1"
+              class="flex ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-right justify-end"
+              ><button
 
-             onclick="deleteTodo('${myTodoList[i]["_id"]}')"
-              ><svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="w-6 h-6"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
-                />
-              </svg> </button
-          ></span>
-          </div>
-        </label>
-      `;
+              type="button"
+              onclick="editTodo('${myTodoList[i]["_id"]}')"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"
+                  />
+                </svg>
+              </button>
+              <button
+
+               onclick="deleteTodo('${myTodoList[i]["_id"]}')"
+                ><svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"
+                  />
+                </svg> </button
+            ></span>
+            </div>
+          </label>
+        `;
           $("#myTodoList").append(tem_HTML);
         }
       }
@@ -278,21 +367,58 @@
         let content = $("#todoContent").val();
         let tag = $("#message-type").val();
 
-        $.ajax({
-          type: "POST",
-          url: "/api/post",
+        function checkLogin() {
+          function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(";").shift();
+          }
 
-          data: {
-            id_give: "2",
-            username_give: "2",
-            content_give: content,
-            tag_give: tag,
-          },
-          success: function (res) {
-            alert("추가가 완료 되었어요!");
-            showMyTodo();
-          },
-        });
+          function parseJwt(token) {
+            try {
+              const base64Url = token.split(".")[1];
+              const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+              const jsonPayload = decodeURIComponent(
+                atob(base64)
+                  .split("")
+                  .map(function (c) {
+                    return (
+                      "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)
+                    );
+                  })
+                  .join("")
+              );
+              return JSON.parse(jsonPayload);
+            } catch (error) {
+              return null;
+            }
+          }
+          const jwtToken = getCookie("jwt_token");
+          if (jwtToken) {
+            const decodedToken = parseJwt(jwtToken);
+            if (decodedToken) {
+              console.log("login 확인 되었습니다.", decodedToken);
+            }
+            $.ajax({
+              type: "POST",
+              url: "/api/post",
+
+              data: {
+                id_give: decodedToken.sub.user_id,
+                username_give: decodedToken.sub.user_name,
+                content_give: content,
+                tag_give: tag,
+              },
+              success: function (res) {
+                alert("추가가 완료 되었어요!");
+                showMyTodo(decodedToken.sub.user_id);
+                let content = $("#todoContent").val("");
+                let tag = $("#message-type").val("태그없음");
+              },
+            });
+          }
+        }
+        checkLogin();
       }
     </script>
   </head>
@@ -352,7 +478,7 @@
           </div>
         </div>
 
-        <div class="flex flex-1 justify-end">
+        <div class="flex flex-1 justify-end" id="loginContainer">
           <a href="/login" class="text-sm font-semibold leading-6 text-gray-900"
             >Log in <span aria-hidden="true">&rarr;</span></a
           >

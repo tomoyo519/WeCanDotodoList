@@ -71,15 +71,14 @@
         if (jwtToken) {
           const decodedToken = parseJwt(jwtToken);
           if (decodedToken) {
-            console.log("토큰 있듬, Decoded JWT Token:", decodedToken);
+            console.log("login 확인 되었습니다.");
             $("#loginContainer").children("a").html("");
             let loginCompleted = `
-              <a href="/login" class="text-sm font-semibold leading-6 text-gray-900"
-            >Welcome! <span aria-hidden="true">&rarr;</span></a
+              <a href="" class="text-sm font-semibold leading-6 text-gray-900"
+            >Welcome!</a
           >
             `;
             $("#loginContainer").append(loginCompleted);
-            // 여기에서 필요한 작업을 수행하세요.
           } else {
             console.log("Invalid JWT Token");
           }
@@ -256,7 +255,7 @@
         </div>
       </div>
     </header>
-    <div class="py-24 sm:py-32">
+    <div class="py-24 sm:py-16">
       <div class="mx-auto max-w-7xl px-6 lg:px-8">
         <div class="mx-auto max-w-2xl lg:mx-0">
           <h2

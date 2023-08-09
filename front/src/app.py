@@ -170,8 +170,10 @@ def read_mytodolist():
 
 def read_myonlytodolist():
 	id_receive = request.form['id_give']
-	result = list(db.todolist.find({'user_id' : id_receive}, {'_id':0}))
-	print('result', result)
+	result = list(db.todolist.find({'user_id' : id_receive}))
+	for todolist in result:
+		todolist['_id'] = str(todolist['_id'])
+	
 
 	return jsonify({'result': 'success', 'mytodolist': result})
 
@@ -188,14 +190,14 @@ def post_todolist():
 
 
 # vc-날짜추가
-	# now = datetime.now()
-	# now_text = now.strftime("%Y/%m/%d")
+	now =  datetime.datetime.utcnow()
+	now_text = now.strftime("%Y/%m/%d")
 	todolist = {
 		'user_id' : id_receive,
 		'user_name' : username_receive,
 		'content' : content_receive,
 		'tag' : tag_receive,
-		'datetime' : "2023/08/09",
+		'datetime' : now_text,
 		'complete' : False
 	}
 
