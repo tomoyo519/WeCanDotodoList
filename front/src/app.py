@@ -48,7 +48,12 @@ def signup():
 def myTodoList():
     return render_template('myToList.html')
 
-   
+@app.route('/tagList', methods=['GET'])
+def tagList():
+    tagList = ["#운동", "#개발공부", "#독서", "#식단"]
+    return render_template('tagList.html', tagList=tagList)
+    
+
 @app.route('/api/signup', methods=['POST'])
 def api_register():
    
@@ -204,6 +209,9 @@ def editsave_todolist():
 	db.todolist.update_one({'_id':ObjectId(objectid_receive)},{'$set': todolist})
 
 	return jsonify({'result': 'success'})
+
+# todoList 중 해당 tag만 받아오는 기능
+
 
 if __name__ == '__main__':  
    app.run('127.0.0.1', port=5000, debug=True)

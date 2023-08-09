@@ -48,7 +48,10 @@
           type:"POST",
           url:"/api/signup",
           data: {'username_give': signupName, 'id_give':signupId, 'pw_give':signupPw, 'pw2_give': signupPw2},
-          success: function(res){
+          success: function(res){        let signupName = $("#name").val();
+        let signupId = $("#id").val('');
+        let signupPw = $("#password").val('');
+        let signupPw2 = $("#passwordcheck").val('');
             alert('회원 가입이 완료 되었습니다! 로그인 해주세요.');
           }
         })
@@ -80,7 +83,7 @@
             <a  href="/myTodo" class="text-sm font-semibold leading-6 text-gray-900"
               >my TodoList</a
             >
-            <a href="#" class="text-sm font-semibold leading-6 text-gray-900"
+            <a href="/tagList" class="text-sm font-semibold leading-6 text-gray-900"
               >tag List
             </a>
           </div>
@@ -278,7 +281,7 @@
                 <input
                   id="passwordcheck"
                   name="passwordcheck"
-                  type="passwordcheck"
+                  type="password"
                   autocomplete="current-passwordcheck"
                   required
                   class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"

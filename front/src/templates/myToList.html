@@ -95,8 +95,8 @@
               .children("span")
               .html("");
             $("#t" + id).append(tagOption);
-            $("#pricing-plans-0-description-1").html("");
-            $("#buttonList").append(saveButtom);
+            $("#" + id + "buttonList").html("");
+            $("#" + id + "buttonList").append(saveButtom);
             $("#" + id)
               .children("span")
               .html("");
@@ -153,7 +153,7 @@
           let tem_HTML = `
         <label
 
-          class="rounded-md rounded-tr-md relative flex cursor-pointer flex-col border p-4 focus:outline-none md:grid md:grid-cols-3 md:pl-4 md:pr-6"
+          class="rounded-md rounded-tr-md relative flex cursor-pointer flex-col border p-4 m-3 focus:outline-none md:grid md:grid-cols-3 md:pl-4 md:pr-6"
         >
           <span class="flex items-center text-sm"    id=${id}>
             <input
@@ -174,7 +174,7 @@
           >
             <span class="font-medium">${myTodoList[i]["tag"]}</span>
           </span>
-          <div id="buttonList">
+          <div id=${id + "buttonList"}>
           <span
             id="pricing-plans-0-description-1"
             class="flex ml-6 pl-1 text-sm md:ml-0 md:pl-0 md:text-right justify-end"
@@ -270,7 +270,9 @@
               class="text-sm font-semibold leading-6 text-gray-900"
               >my TodoList</a
             >
-            <a href="#" class="text-sm font-semibold leading-6 text-gray-900"
+            <a
+              href="/tagList"
+              class="text-sm font-semibold leading-6 text-gray-900"
               >tag List
             </a>
           </div>
@@ -377,7 +379,7 @@
         </div>
       </div>
 
-      <div action="#" class="relative">
+      <div action="#" class="relative m-3">
         <div
           class="mt-3 p-3 overflow-hidden rounded-lg border border-gray-300 shadow-sm focus-within:border-indigo-500 focus-within:ring-1 focus-within:ring-indigo-500"
         >
