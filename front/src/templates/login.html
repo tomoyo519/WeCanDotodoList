@@ -50,14 +50,14 @@
                 },
                 success: function (response) {
 
-                    console.log(response)
-                    if (response['result'] == 'success') {
+                    console.log('thisisres', response)
+                    if (response['message'] == 'success') {
                         let signinId = $("#id").val('');
                         let signinPw =  $("#password").val('');
                         alert('로그인 완료');
                         window.location.replace('/')
                     } else {
-                        alert(response['msg'])
+                        alert(response['message'])
                     }
                 }
                 

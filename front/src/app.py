@@ -34,6 +34,7 @@ import jwt
 client = MongoClient('localhost',27017)
 db = client.dbtodolist
 
+# SECRET_KEY = 'SPARTA'
 
 # now = datetime.now()
 # now_text = now.strftime("%Y/%m/%d")
@@ -116,7 +117,7 @@ def api_login():
 		return jsonify({'message': 'Invalid credentials'}), 401
 
 	token = create_jwt_token(result)
-	response = make_response(jsonify({'message': 'Login successful'}), 200)
+	response = make_response(jsonify({'message': 'success'}), 200)
 	response.set_cookie('jwt_token', token)
 	return response
 			
@@ -166,11 +167,15 @@ def read_mytodolist():
 
 
 @app.route('/api/post', methods=['POST'])
+@jwt_required
 def post_todolist():
 	id_receive = request.form['id_give']
 	username_receive = request.form['username_give']
 	content_receive = request.form['content_give']
 	tag_receive = request.form['tag_give']
+
+	current_user = get_jwt_identity
+	print("current_user:", current_user)
 # vc-날짜추가
 	now = datetime.now()
 	now_text = now.strftime("%Y/%m/%d")
@@ -230,12 +235,11 @@ def editsave_todolist():
 	}
 
 	db.todolist.update_one({'_id':ObjectId(objectid_receive)},{'$set': todolist})
-
 	return jsonify({'result': 'success'})
 
 # todoList 중 해당 tag만 받아오는 기능
 
 
 if __name__ == '__main__':  
-   app.run('127.0.0.1', port=5000, debug=True)
+   app.run('127.0.0.1', port=5001, debug=True)
    

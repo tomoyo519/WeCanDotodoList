@@ -40,15 +40,59 @@
     <script>
       $(document).ready(function () {
         showUserData();
+        checkLogin();
       });
+      function checkLogin() {
+        function getCookie(name) {
+          const value = `; ${document.cookie}`;
+          const parts = value.split(`; ${name}=`);
+          if (parts.length === 2) return parts.pop().split(";").shift();
+        }
+
+        function parseJwt(token) {
+          try {
+            const base64Url = token.split(".")[1];
+            const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+            const jsonPayload = decodeURIComponent(
+              atob(base64)
+                .split("")
+                .map(function (c) {
+                  return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+                })
+                .join("")
+            );
+            return JSON.parse(jsonPayload);
+          } catch (error) {
+            return null;
+          }
+        }
+
+        const jwtToken = getCookie("jwt_token");
+        if (jwtToken) {
+          const decodedToken = parseJwt(jwtToken);
+          if (decodedToken) {
+            console.log("토큰 있듬, Decoded JWT Token:", decodedToken);
+            $("#loginContainer").children("a").html("");
+            let loginCompleted = `
+              <a href="/login" class="text-sm font-semibold leading-6 text-gray-900"
+            >Welcome! <span aria-hidden="true">&rarr;</span></a
+          >
+            `;
+            $("#loginContainer").append(loginCompleted);
+            // 여기에서 필요한 작업을 수행하세요.
+          } else {
+            console.log("Invalid JWT Token");
+          }
+        } else {
+          console.log("JWT Token not found in cookie");
+        }
+      }
       function showUserData() {
         $.ajax({
           type: "GET",
           url: "/api/chart",
           success: function (response) {
-            console.log(response["usercompleted_rate"]);
             for (let i = 0; i < response["usercompleted_rate"].length; i++) {
-              console.log(response["usercompleted_rate"][i]);
               makeData(
                 response["usercompleted_rate"][i][0],
                 response["usercompleted_rate"][i][0],
@@ -147,7 +191,7 @@
           </div>
         </div>
 
-        <div class="flex flex-1 justify-end">
+        <div class="flex flex-1 justify-end" id="loginContainer">
           <a href="/login" class="text-sm font-semibold leading-6 text-gray-900"
             >Log in <span aria-hidden="true">&rarr;</span></a
           >
