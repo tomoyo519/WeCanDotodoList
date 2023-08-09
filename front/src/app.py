@@ -31,7 +31,7 @@ import jwt
 
 
 client = MongoClient('localhost',27017)
-db = client.dbtodolist
+db = client.mytodolist
 
 # SECRET_KEY = 'SPARTA'
 
