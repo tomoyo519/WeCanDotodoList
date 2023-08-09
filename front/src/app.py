@@ -86,6 +86,21 @@ def api_register():
 	pw2_receive = request.form['pw2_give']
 	
 
+	if username_receive == "" or id_receive == "" or pw_receive == "" or pw2_receive == "":
+		# flash("입력되지 않은 값이 있습니다.")
+		return jsonify({'result': False, 'msg':'입력되지 않은 값이 있습니다.'})
+
+	if pw_receive != pw2_receive:
+		return jsonify({'result': False, 'msg': '비밀번호가 일치하지 않습니다.'})
+	
+	username_cnt = len(list[db.user.find({"user_id": username_receive}, {'_id': 0})])
+	if username_cnt > 0:
+		return jsonify({'result': False, 'msg': "중복된 성명입니다."})
+
+	userid_cnt = len(list[db.user.find({"user_id": id_receive}, {'_id': 0})])
+	if userid_cnt > 0:
+  		return jsonify({'result': False, 'msg': "중복된 성명입니다."})
+
 
 	pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
 

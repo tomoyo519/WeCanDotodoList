@@ -97,12 +97,19 @@
           url:"/api/signup",
           data: {'username_give': signupName, 'id_give':signupId, 'pw_give':signupPw, 'pw2_give': signupPw2},
           success: function(res){
-          alert('회원 가입이 완료 되었습니다! 로그인 해주세요.');        
-          let signupName = $("#name").val();
-          let signupId = $("#id").val('');
-          let signupPw = $("#password").val('');
-          let signupPw2 = $("#passwordcheck").val('');
+          console.log('thisisres', res)
+          if(!res.result){
+            alert(res.msg)
+
+          }else{
+
+            alert('회원 가입이 완료 되었습니다! 로그인 해주세요.');        
+            let signupName = $("#name").val();
+            let signupId = $("#id").val('');
+            let signupPw = $("#password").val('');
+            let signupPw2 = $("#passwordcheck").val('');
             
+          }
           }
         })
       }
@@ -312,9 +319,7 @@
               <div class="mt-2">
                 <input
                   id="password"
-                  name="password"
                   type="password"
-                  autocomplete="current-password"
                   required
                   class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -329,6 +334,7 @@
               >
               <div class="mt-2">
                 <input
+                minlength="8"
                   id="passwordcheck"
                   name="passwordcheck"
                   type="password"
@@ -342,7 +348,7 @@
             <div class="flex">
               <button
                 onclick="signup()"
-                type="submit"
+                type="button"
                 class="mr-3 flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
               회원가입 하기
