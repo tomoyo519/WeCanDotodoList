@@ -99,7 +99,7 @@ def api_register():
 
 	userid_cnt = len(list(db.user.find({"user_id": id_receive}, {'_id': 0})))
 	if userid_cnt > 0:
-  		return jsonify({'result': False, 'msg': "중복된 성명입니다."})
+  		return jsonify({'result': False, 'msg': "중복된 아이디 입니다.."})
 
 
 	pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
