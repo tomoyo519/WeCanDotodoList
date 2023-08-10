@@ -71,7 +71,6 @@
         if (jwtToken) {
           const decodedToken = parseJwt(jwtToken);
           if (decodedToken) {
-            console.log("login 확인 되었습니다.");
             $("#loginContainer").children("a").html("");
             let loginCompleted = `
                            <a href="" class="text-sm font-semibold leading-6 text-gray-900"
@@ -100,7 +99,6 @@
           url:"/api/signup",
           data: {'username_give': signupName, 'id_give':signupId, 'pw_give':signupPw, 'pw2_give': signupPw2},
           success: function(res){
-          console.log('thisisres', res)
           if(!res.result){
             alert(res.msg)
 
@@ -118,7 +116,6 @@
       }
 
       function gethome(){
-        console.log('집으로 드가자')
         window.location.replace('/')
       }
     </script>

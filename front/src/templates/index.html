@@ -71,7 +71,6 @@
         if (jwtToken) {
           const decodedToken = parseJwt(jwtToken);
           if (decodedToken) {
-            console.log("login 확인 되었습니다.");
             $("#loginContainer").children("a").html("");
             let loginCompleted = `
            

@@ -62,7 +62,6 @@
         if (jwtToken) {
           const decodedToken = parseJwt(jwtToken);
           if (decodedToken) {
-            console.log("login 확인 되었습니다.");
             $("#loginContainer").children("a").html("");
             let loginCompleted = `
                          <a href="" class="text-sm font-semibold leading-6 text-gray-900"
@@ -85,7 +84,6 @@
 
       function getTagTodo(item) {
         let newItem = item.slice(1);
-        console.log(newItem);
         $.ajax({
           type: "GET",
           url: "/api/read_mytodolist",
@@ -96,7 +94,6 @@
       }
 
       function makeTodoList(list, tagName) {
-        console.log(list, tagName.slice(1));
         let result = list.filter((word) => word.tag === tagName.slice(1));
 
         function getCookie(name) {
@@ -140,7 +137,6 @@
       }
 
       function makeTodoUnit(myTodoList) {
-        console.log("makeTodoUnit(myTOdoList):,", myTodoList);
         $("#list_container").html("");
         for (let i = 0; i < myTodoList.length; i++) {
           id = myTodoList[i]["_id"];
@@ -209,7 +205,6 @@
         if (jwtToken) {
           const decodedToken = parseJwt(jwtToken);
           if (decodedToken) {
-            console.log("login 확인 되었습니다.");
             $.ajax({
               type: "POST",
               url: "/api/post",
@@ -229,8 +224,6 @@
         } else {
           console.log("JWT Token not found in cookie");
         }
-
-        console.log(content, tag);
       }
     </script>
   </head>

@@ -143,8 +143,9 @@ def api_login():
 @app.route('/api/chart', methods=['GET'])
 def chart():
 
-
-	todolist_all = list(db.todolist.find({}, {'_id': 0}))
+	now =  datetime.datetime.utcnow()
+	now_text = now.strftime("%Y/%m/%d")
+	todolist_all = list(db.todolist.find({'datetime':now_text}, {'_id': 0}))
 	
 	username = []
 	usercompleted_rate = []
@@ -175,7 +176,9 @@ def chart():
 @app.route('/api/read_mytodolist', methods=['GET'])
 
 def read_mytodolist():
-	result = list(db.todolist.find({}))
+	now =  datetime.datetime.utcnow()
+	now_text = now.strftime("%Y/%m/%d")
+	result = list(db.todolist.find({'datetime':now_text}))
 	for todolist in result:
 		todolist['_id'] = str(todolist['_id'])
 
@@ -186,7 +189,9 @@ def read_mytodolist():
 
 def read_myonlytodolist():
 	id_receive = request.form['id_give']
-	result = list(db.todolist.find({'user_id' : id_receive}))
+	now =  datetime.datetime.utcnow()
+	now_text = now.strftime("%Y/%m/%d")
+	result = list(db.todolist.find({'user_id' : id_receive, 'datetime':now_text}))
 	for todolist in result:
 		todolist['_id'] = str(todolist['_id'])
 	
