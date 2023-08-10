@@ -78,6 +78,9 @@
              <a href="" class="text-sm font-semibold leading-6 text-gray-900"
                        >  Welcome! ${decodedToken.sub.user_name}</a
           >
+             <a href="#" onclick="logout()" class="cursor pl-5 text-sm font-semibold leading-6 text-gray-900"
+                       > LOGOUT</a
+          >
             `;
             $("#loginContainer").append(loginCompleted);
           } else {
@@ -87,6 +90,16 @@
           console.log("JWT Token not found in cookie");
         }
       }
+
+      function logout() {
+        function deleteCookie(name) {
+          document.cookie =
+            name + "=; expires = Thu, 01 Jan 1999 00:00:10 GMT;";
+        }
+        deleteCookie("jwt_token");
+        window.location.reload();
+      }
+
       function showUserData() {
         $.ajax({
           type: "GET",

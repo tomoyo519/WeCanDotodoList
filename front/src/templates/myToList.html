@@ -65,9 +65,12 @@
           if (decodedToken) {
             $("#loginContainer").children("a").html("");
             let loginCompleted = `
-                <a href="" class="text-sm font-semibold leading-6 text-gray-900"
-                       > Welcome! ${decodedToken.sub.user_name}</a
-            >
+                          <a href="" class="text-sm font-semibold leading-6 text-gray-900"
+                       >  Welcome! ${decodedToken.sub.user_name}</a
+          >
+             <a href="#" onclick="logout()" class="cursor pl-5 text-sm font-semibold leading-6 text-gray-900"
+                       > LOGOUT</a
+          >
               `;
             $("#loginContainer").append(loginCompleted);
             showMyTodo(decodedToken["sub"]["user_id"]);
