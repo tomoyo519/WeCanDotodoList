@@ -446,13 +446,21 @@
           }
         }
       }
-
+      function checkLength(e) {
+        let content = $("#todoContent").val();
+        if (content.length == 51) {
+          alert("목표는 50글자 이상 입력할 수 없어요! 현재 51글자에요.");
+        }
+        console.log("input 변경 용용 감지", content.length);
+      }
       function addMyTodo() {
         let content = $("#todoContent").val();
         let tag = $("#message-type").val();
         console.log("thisiscontent.lengt", content.length);
         if (content.length == 0) {
           alert("해야 할일을 적은 후 추가 해주세요!");
+          return;
+        } else if (content.length == 51) {
           return;
         }
 
@@ -486,7 +494,7 @@
           if (jwtToken) {
             const decodedToken = parseJwt(jwtToken);
             if (decodedToken) {
-              console.log("content.length", content);
+              console.log("content.length", content.length);
 
               $.ajax({
                 type: "POST",
@@ -653,7 +661,8 @@
         >
           <label for="title" class="sr-only">해야 할일을 적어보세요</label>
           <input
-            maxlength="50"
+            onchange="checkLength()"
+            maxlength="51"
             type="text"
             name="title"
             id="todoContent"
