@@ -32,10 +32,6 @@
     <script>
       $(document).ready(function () {
         let result = checkLogin();
-        console.log("thisisresult", result);
-        // if (!result) {
-        //
-        //}
       });
 
       function checkLogin() {
@@ -67,7 +63,6 @@
         if (jwtToken) {
           const decodedToken = parseJwt(jwtToken);
           if (decodedToken) {
-            console.log("login 확인 되었습니다.", decodedToken);
             $("#loginContainer").children("a").html("");
             let loginCompleted = `
                 <a href="" class="text-sm font-semibold leading-6 text-gray-900"
@@ -89,7 +84,6 @@
 
       function showMyTodo(id) {
         $("#myTodoList").html("");
-        console.log("showmytodo", id);
         if (id) {
           $.ajax({
             type: "POST",
@@ -98,7 +92,6 @@
               id_give: id,
             },
             success: function (res) {
-              console.log(res);
               makeTodoUnit(res.mytodolist);
             },
           });
@@ -174,7 +167,6 @@
       }
 
       function completeTodo(id) {
-        console.log("completeTodo");
         $.ajax({
           type: "POST",
           url: "/api/complete",
@@ -458,6 +450,11 @@
       function addMyTodo() {
         let content = $("#todoContent").val();
         let tag = $("#message-type").val();
+        console.log("thisiscontent.lengt", content.length);
+        if (content.length == 0) {
+          alert("해야 할일을 적은 후 추가 해주세요!");
+          return;
+        }
 
         function checkLogin() {
           function getCookie(name) {
@@ -489,25 +486,26 @@
           if (jwtToken) {
             const decodedToken = parseJwt(jwtToken);
             if (decodedToken) {
-              console.log("login 확인 되었습니다.", decodedToken);
-            }
-            $.ajax({
-              type: "POST",
-              url: "/api/post",
+              console.log("content.length", content);
 
-              data: {
-                id_give: decodedToken.sub.user_id,
-                username_give: decodedToken.sub.user_name,
-                content_give: content,
-                tag_give: tag,
-              },
-              success: function (res) {
-                alert("추가가 완료 되었어요!");
-                showMyTodo(decodedToken.sub.user_id);
-                let content = $("#todoContent").val("");
-                let tag = $("#message-type").val("태그없음");
-              },
-            });
+              $.ajax({
+                type: "POST",
+                url: "/api/post",
+
+                data: {
+                  id_give: decodedToken.sub.user_id,
+                  username_give: decodedToken.sub.user_name,
+                  content_give: content,
+                  tag_give: tag,
+                },
+                success: function (res) {
+                  alert("추가가 완료 되었어요!");
+                  showMyTodo(decodedToken.sub.user_id);
+                  let content = $("#todoContent").val("");
+                  let tag = $("#message-type").val("태그없음");
+                },
+              });
+            }
           }
         }
         checkLogin();
@@ -655,6 +653,7 @@
         >
           <label for="title" class="sr-only">해야 할일을 적어보세요</label>
           <input
+            maxlength="50"
             type="text"
             name="title"
             id="todoContent"
