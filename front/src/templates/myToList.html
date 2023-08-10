@@ -174,9 +174,20 @@
             objectid_give: id,
           },
           success: function (res) {
-            alert("완료 처리 되었습니다!");
-            document.getElementById("label" + id).style.background =
-              "rgb(55 65 81)";
+            console.log("thisisres", res);
+            if (res["msg"] === "완료처리 되었습니다.") {
+              alert(res["msg"]);
+              document.getElementById("label" + id).style.background =
+                "rgb(55 65 81)";
+            } else if (res["msg"] === "미완료처리 되었습니다.") {
+              alert(res["msg"]);
+              document.getElementById("label" + id).styled.background = rgb(
+                255,
+                255,
+                255
+              );
+            }
+            window.location.replace("/myTodo");
           },
         });
       }

@@ -236,10 +236,10 @@ def complete_todolist():
 	target_content = db.todolist.find_one({'_id': ObjectId(objectid_receive)})
 	if target_content['complete'] == False:
 		db.todolist.update_one({'_id': ObjectId(objectid_receive)},{'$set': {'complete':True}})
+		return jsonify({'result':'success', 'msg':'완료처리 되었습니다.'})
 	else:
 		db.todolist.update_one({'_id': ObjectId(objectid_receive)},{'$set': {'complete':False}})
-	
-	return jsonify({'result': 'success'})
+		return jsonify({'result':'success', 'msg':'미완료처리 되었습니다.'})
 
 
 #수수정버튼 누른 todo 정보 받아노는것
